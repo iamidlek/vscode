@@ -101,7 +101,10 @@ export class MouseHandler extends ViewEventHandler {
 
 			if (!this._mouseLeaveMonitor) {
 				this._mouseLeaveMonitor = dom.addDisposableListener(this.viewHelper.viewDomNode.ownerDocument, 'mousemove', (e) => {
-					if (!this.viewHelper.viewDomNode.contains(e.target as Node | null)) {
+					const viewRoot = this.viewHelper.viewDomNode.getRootNode() as ShadowRoot | Document;
+					const viewRootIsShadowRoot = viewRoot instanceof ShadowRoot;
+
+					if (!this.viewHelper.viewDomNode.contains(e.composedPath()[0] as Node | null) && !viewRootIsShadowRoot) {
 						// went outside the editor!
 						this._onMouseLeave(new EditorMouseEvent(e, false, this.viewHelper.viewDomNode));
 					}
